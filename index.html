@@ -9,9 +9,14 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
     <style>
-        /* YENİ KÜÇÜLTÜLMÜŞ BUTON CSS'İ */
         body { margin: 0px; overflow: hidden; }
         a-scene { pointer-events: none; } 
+
+        /* KRİTİK DÜZELTME: Kamera tuvalini ekran boyutuna zorlar */
+        canvas {
+            width: 100% !important; 
+            height: 100% !important;
+        }
 
         .controls {
             position: fixed; bottom: 15px; width: 100%; text-align: center; z-index: 9999;
@@ -19,22 +24,10 @@
         }
         
         button {
-            padding: 15px 30px; /* Buton padding'i */
-            font-size: 18px;    /* Yazı boyutu */
-            min-width: 150px;   
-            width: auto;        
-            height: auto;       
-            
-            margin: 5px; 
-            cursor: pointer;
-            border: none;
-            border-radius: 8px; 
-            background-color: #dc3545; 
-            color: white; 
-            font-weight: bold; 
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
-            transition: background-color 0.3s ease;
-            touch-action: manipulation;
+            padding: 15px 30px; font-size: 18px; min-width: 150px; width: auto; height: auto;
+            margin: 5px; cursor: pointer; border: none; border-radius: 8px; background-color: #dc3545; 
+            color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+            transition: background-color 0.3s ease; touch-action: manipulation;
         }
 
         button:hover { background-color: #bd2130; }
@@ -52,7 +45,8 @@
                    detectionMode: mono; 
                    cameraParametersUrl: camera_para.dat; 
                    trackingMethod: best;
-                   device-orientation-ok: false;' 
+                   device-orientation-ok: false;
+                   display-mode: portrait;' 
              vr-mode-ui="enabled: false">
 
         <a-entity light="type: ambient; intensity: 0.8;"></a-entity>
