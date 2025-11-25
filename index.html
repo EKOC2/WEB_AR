@@ -3,29 +3,58 @@
 <head>
     <meta charset="utf-8">
     <title>Çoklu Mobilya WebAR Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
     <style>
-        /* Butonları sayfanın üstünde sabitlemek için stil */
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            z-index: 999;
-            pointer-events: auto; /* Tıklama olaylarını etkinleştir */
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 0 10px;
-            cursor: pointer;
-        }
         /* A-Frame sahnesinin tüm ekranı kaplaması için */
         body {
             margin: 0px;
             overflow: hidden;
+        }
+
+        /* Butonları sayfanın altında ortalamak için genel kontrol sınıfı */
+        .controls {
+            position: fixed;
+            bottom: 15px; 
+            width: 100%;
+            text-align: center;
+            z-index: 999;
+            pointer-events: auto;
+        }
+        
+        /* Butonların Kendisine Uygulanan Stiller (Mobil Dostu) */
+        button {
+            /* Boyutlandırma */
+            padding: 20px 40px; 
+            font-size: 20px;    
+            min-width: 45%; 
+            
+            /* Görünüm */
+            margin: 5px; 
+            cursor: pointer;
+            border: none;
+            border-radius: 12px; 
+            background-color: #28a745; /* Dikkat çekici yeşil */
+            color: white; 
+            font-weight: bold; 
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); 
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1e7e34;
+        }
+
+        /* Dikey mobil kullanımda butonları alt alta getir */
+        @media (max-width: 600px) {
+            button {
+                display: block; 
+                width: 90%;     
+                margin: 10px auto; 
+            }
         }
     </style>
 </head>
@@ -46,27 +75,37 @@
     </div>
 
     <script>
+        /**
+         * Verilen GLB modelini AR sahnesine dinamik olarak ekler.
+         * @param {string} modelSrc - GLB dosyasının adı ('test1.glb' gibi)
+         * @param {number} posX - X pozisyonu (marker merkezine göre sağ/sol)
+         * @param {number} posY - Y pozisyonu (Genellikle 0, zemin seviyesi)
+         * @param {number} posZ - Z pozisyonu (marker merkezine göre ileri/geri)
+         */
         function addModel(modelSrc, posX, posY, posZ) {
-            const scene = document.querySelector('a-scene');
-
-            // Yeni 3D öğe oluştur
+            // Yeni 3D öğe (entity) oluştur
             const entity = document.createElement('a-entity');
             
             // GLB modelini yükle
             entity.setAttribute('gltf-model', `url(${modelSrc})`);
             
-            // Pozisyonu ayarla (Y = 0 zemin demektir)
+            // Pozisyonu ayarla 
             entity.setAttribute('position', `${posX} ${posY} ${posZ}`);
             
-            // Boyutu ayarla (Gerekiyorsa, modelinize göre değiştirin)
+            // Boyutu ayarla (0.5 küçültülmüş boyut demektir, modelinize göre ayarlayın)
             entity.setAttribute('scale', '0.5 0.5 0.5'); 
 
-            // Sahneye ekle
-            // Eğer modelin marker'a göre konumlanmasını istiyorsanız, marker elementinin içine ekleyin
+            // Modeli AR Marker'ının içine ekle ki marker hareket ettikçe model de hareket etsin
             const marker = document.querySelector('a-marker-camera');
-            marker.appendChild(entity);
             
-            console.log(`${modelSrc} sahneye eklendi.`);
+            // Eğer marker bulunduysa modeli ekle
+            if (marker) {
+                marker.appendChild(entity);
+                console.log(`${modelSrc} sahneye eklendi.`);
+            } else {
+                console.error("AR Marker bulunamadı. Model eklenemedi.");
+                alert("AR Kamerası henüz hazır değil veya marker bulunamadı.");
+            }
         }
     </script>
 
