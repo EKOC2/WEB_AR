@@ -9,10 +9,14 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
     <style>
-        /* A-Frame sahnesinin tüm ekranı kaplaması için */
         body {
             margin: 0px;
             overflow: hidden;
+        }
+
+        /* KRİTİK DÜZELTME: A-Scene'in tıklama olaylarını engelle ki butonlar çalışsın */
+        a-scene {
+            pointer-events: none;
         }
 
         /* Butonları sayfanın altında ortalamak ve yönetmek için genel kontrol sınıfı */
@@ -21,15 +25,18 @@
             bottom: 10px; 
             width: 100%;
             text-align: center;
-            z-index: 999; /* Kamera görüntüsünün üstünde kalmasını sağlar */
+            z-index: 9999; /* Butonların en üstte kalmasını sağlar */
+            
+            /* KRİTİK DÜZELTME: Sadece kontrol kutusunun tıklama olaylarını etkinleştir */
             pointer-events: auto;
+            
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 0 10px; 
         }
         
-        /* Butonların Kendisine Uygulanan Maksimum Boyut Stilleri */
+        /* Buton Stilleri */
         button {
             padding: 25px 50px; 
             font-size: 24px;    
@@ -45,7 +52,7 @@
             font-weight: bold; 
             box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3); 
             transition: background-color 0.3s ease;
-            touch-action: manipulation; /* Dokunma performansını optimize eder */
+            touch-action: manipulation;
         }
 
         button:hover {
@@ -73,7 +80,8 @@
         <a-entity light="type: ambient; intensity: 0.8;"></a-entity>
         <a-entity light="type: directional; intensity: 0.6;" position="1 1 1"></a-entity>
 
-        <a-camera user-y-position="0" 
+        <a-camera position="0 0 0" 
+                  user-y-position="0" 
                   wasd-controls-enabled="false" 
                   look-controls="enabled: false">
         </a-camera> 
@@ -91,11 +99,8 @@
          */
         function addModel(modelSrc, posX, posY, posZ) {
             const scene = document.querySelector('a-scene');
-            
-            // Yeni 3D öğe (entity) oluştur
             const entity = document.createElement('a-entity');
             
-            // GLB modelini yükle
             entity.setAttribute('gltf-model', `url(${modelSrc})`);
             
             // Pozisyonu ayarla (Kameranın önüne yerleştirir)
