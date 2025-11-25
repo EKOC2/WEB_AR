@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Çoklu Mobilya WebAR Viewer</title>
+    <title>Markerless Çoklu Mobilya WebAR</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
     <style>
         /* A-Frame sahnesinin tüm ekranı kaplaması için */
@@ -69,46 +69,46 @@
 </head>
 <body>
 
-    <a-scene embedded arjs>
+    <a-scene embedded 
+             arjs='sourceType: webcam; detectionMode: mono; cameraParametersUrl: camera_para.dat; trackingMethod: best;' 
+             vr-mode-ui="enabled: false">
 
         <a-entity light="type: ambient; intensity: 0.8;"></a-entity>
         <a-entity light="type: directional; intensity: 0.6;" position="1 1 1"></a-entity>
 
-        <a-marker-camera preset='hiro'></a-marker-camera>
+        <a-camera></a-camera> 
 
     </a-scene>
 
     <div class="controls">
-        <button onclick="addModel('testglb1.glb', -0.5, 0, 0)">🛋️ Koltuk (Test 1) Ekle</button>
-        <button onclick="addModel('testglb2.glb', 0.5, 0, 0)">🍽️ Masa (Test 2) Ekle</button>
+        <button onclick="addModel('test1.glb', -0.5, 0, -3)">🛋️ Koltuk (Test 1) Ekle</button>
+        <button onclick="addModel('test2.glb', 0.5, 0, -3)">🍽️ Masa (Test 2) Ekle</button>
     </div>
 
     <script>
         /**
-         * Verilen GLB modelini AR sahnesine dinamik olarak ekler ve marker'a bağlar.
+         * Verilen GLB modelini AR sahnesine dinamik olarak ekler.
          */
         function addModel(modelSrc, posX, posY, posZ) {
+            const scene = document.querySelector('a-scene');
+            
             // Yeni 3D öğe (entity) oluştur
             const entity = document.createElement('a-entity');
             
             // GLB modelini yükle
             entity.setAttribute('gltf-model', `url(${modelSrc})`);
             
-            // Pozisyonu ayarla (marker'a göre konumlandırma)
+            // Pozisyonu ayarla 
             entity.setAttribute('position', `${posX} ${posY} ${posZ}`);
             
             // Boyutu ayarla (Ölçeklendirme)
             entity.setAttribute('scale', '0.5 0.5 0.5'); 
 
-            // Modeli AR Marker'ının içine ekle
-            const marker = document.querySelector('a-marker-camera');
+            // Modeli direkt sahneye ekle
+            scene.appendChild(entity);
+            console.log(`${modelSrc} sahneye eklendi.`);
             
-            if (marker) {
-                marker.appendChild(entity);
-                console.log(`${modelSrc} sahneye eklendi.`);
-            } else {
-                console.error("AR Marker bileşeni bulunamadı.");
-            }
+            // İPUCU: Modelleri hareket ettirmek isterseniz, bu modele bir "draggable" bileşeni ekleyebilirsiniz.
         }
     </script>
 
