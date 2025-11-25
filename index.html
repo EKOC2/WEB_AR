@@ -15,45 +15,54 @@
             overflow: hidden;
         }
 
-        /* Butonları sayfanın altında ortalamak için genel kontrol sınıfı */
+        /* Butonları sayfanın altında ortalamak ve yönetmek için genel kontrol sınıfı */
         .controls {
             position: fixed;
-            bottom: 15px; 
+            bottom: 10px; 
             width: 100%;
             text-align: center;
             z-index: 999;
             pointer-events: auto;
+            /* Flexbox ile butonları merkezle ve yan yana diz */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 10px; 
         }
         
-        /* Butonların Kendisine Uygulanan Stiller (Mobil Dostu) */
+        /* Butonların Kendisine Uygulanan Son, Maksimum Boyut Stilleri */
         button {
-            /* Boyutlandırma */
-            padding: 20px 40px; 
-            font-size: 20px;    
-            min-width: 45%; 
+            /* Boyutlandırma: Maksimum tıklama alanı */
+            padding: 25px 50px; 
+            font-size: 24px;    
+            height: 80px;       
+            width: 48%;         /* Ekranın neredeyse yarısını kapla */
             
             /* Görünüm */
             margin: 5px; 
             cursor: pointer;
             border: none;
-            border-radius: 12px; 
-            background-color: #28a745; /* Dikkat çekici yeşil */
+            border-radius: 15px; 
+            background-color: #dc3545; /* Kırmızı renk */
             color: white; 
             font-weight: bold; 
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); 
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3); 
             transition: background-color 0.3s ease;
+            touch-action: manipulation; /* Dokunma performansını optimize et */
         }
 
         button:hover {
-            background-color: #1e7e34;
+            background-color: #bd2130;
         }
 
-        /* Dikey mobil kullanımda butonları alt alta getir */
+        /* Dikey mobil kullanımda (600px altı ekranlar) butonları alt alta getir */
         @media (max-width: 600px) {
+            .controls {
+                flex-direction: column; /* Butonları dikey yığınla */
+            }
             button {
-                display: block; 
-                width: 90%;     
-                margin: 10px auto; 
+                width: 95%;     /* Ekranın %95'ini kapla */
+                margin: 8px auto; 
             }
         }
     </style>
@@ -76,11 +85,7 @@
 
     <script>
         /**
-         * Verilen GLB modelini AR sahnesine dinamik olarak ekler.
-         * @param {string} modelSrc - GLB dosyasının adı ('test1.glb' gibi)
-         * @param {number} posX - X pozisyonu (marker merkezine göre sağ/sol)
-         * @param {number} posY - Y pozisyonu (Genellikle 0, zemin seviyesi)
-         * @param {number} posZ - Z pozisyonu (marker merkezine göre ileri/geri)
+         * Verilen GLB modelini AR sahnesine dinamik olarak ekler ve marker'a bağlar.
          */
         function addModel(modelSrc, posX, posY, posZ) {
             // Yeni 3D öğe (entity) oluştur
@@ -89,26 +94,23 @@
             // GLB modelini yükle
             entity.setAttribute('gltf-model', `url(${modelSrc})`);
             
-            // Pozisyonu ayarla 
+            // Pozisyonu ayarla (marker'a göre konumlandırma)
             entity.setAttribute('position', `${posX} ${posY} ${posZ}`);
             
-            // Boyutu ayarla (0.5 küçültülmüş boyut demektir, modelinize göre ayarlayın)
+            // Boyutu ayarla (Ölçeklendirme)
             entity.setAttribute('scale', '0.5 0.5 0.5'); 
 
-            // Modeli AR Marker'ının içine ekle ki marker hareket ettikçe model de hareket etsin
+            // Modeli AR Marker'ının içine ekle
             const marker = document.querySelector('a-marker-camera');
             
-            // Eğer marker bulunduysa modeli ekle
             if (marker) {
                 marker.appendChild(entity);
                 console.log(`${modelSrc} sahneye eklendi.`);
             } else {
-                console.error("AR Marker bulunamadı. Model eklenemedi.");
-                alert("AR Kamerası henüz hazır değil veya marker bulunamadı.");
+                console.error("AR Marker bileşeni bulunamadı.");
             }
         }
     </script>
 
 </body>
 </html>
-
