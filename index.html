@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Çoklu Mobilya WebAR Viewer</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+    <style>
+        /* Butonları sayfanın üstünde sabitlemek için stil */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            z-index: 999;
+            pointer-events: auto; /* Tıklama olaylarını etkinleştir */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        /* A-Frame sahnesinin tüm ekranı kaplaması için */
+        body {
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <a-scene embedded arjs>
+
+        <a-entity light="type: ambient; intensity: 0.8;"></a-entity>
+        <a-entity light="type: directional; intensity: 0.6;" position="1 1 1"></a-entity>
+
+        <a-marker-camera preset='hiro'></a-marker-camera>
+
+    </a-scene>
+
+    <div class="controls">
+        <button onclick="addModel('test1.glb', -0.5, 0, 0)">🛋️ Koltuk (Test 1) Ekle</button>
+        <button onclick="addModel('test2.glb', 0.5, 0, 0)">🍽️ Masa (Test 2) Ekle</button>
+    </div>
+
+    <script>
+        function addModel(modelSrc, posX, posY, posZ) {
+            const scene = document.querySelector('a-scene');
+
+            // Yeni 3D öğe oluştur
+            const entity = document.createElement('a-entity');
+            
+            // GLB modelini yükle
+            entity.setAttribute('gltf-model', `url(${modelSrc})`);
+            
+            // Pozisyonu ayarla (Y = 0 zemin demektir)
+            entity.setAttribute('position', `${posX} ${posY} ${posZ}`);
+            
+            // Boyutu ayarla (Gerekiyorsa, modelinize göre değiştirin)
+            entity.setAttribute('scale', '0.5 0.5 0.5'); 
+
+            // Sahneye ekle
+            // Eğer modelin marker'a göre konumlanmasını istiyorsanız, marker elementinin içine ekleyin
+            const marker = document.querySelector('a-marker-camera');
+            marker.appendChild(entity);
+            
+            console.log(`${modelSrc} sahneye eklendi.`);
+        }
+    </script>
+
+</body>
+</html>
