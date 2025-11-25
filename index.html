@@ -21,34 +21,31 @@
             bottom: 10px; 
             width: 100%;
             text-align: center;
-            z-index: 999;
+            z-index: 999; /* Kamera görüntüsünün üstünde kalmasını sağlar */
             pointer-events: auto;
-            /* Flexbox ile butonları merkezle ve yan yana diz */
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 0 10px; 
         }
         
-        /* Butonların Kendisine Uygulanan Son, Maksimum Boyut Stilleri */
+        /* Butonların Kendisine Uygulanan Maksimum Boyut Stilleri */
         button {
-            /* Boyutlandırma: Maksimum tıklama alanı */
             padding: 25px 50px; 
             font-size: 24px;    
             height: 80px;       
-            width: 48%;         /* Ekranın neredeyse yarısını kapla */
+            width: 48%;         
             
-            /* Görünüm */
             margin: 5px; 
             cursor: pointer;
             border: none;
             border-radius: 15px; 
-            background-color: #dc3545; /* Kırmızı renk */
+            background-color: #dc3545; 
             color: white; 
             font-weight: bold; 
             box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3); 
             transition: background-color 0.3s ease;
-            touch-action: manipulation; /* Dokunma performansını optimize et */
+            touch-action: manipulation; /* Dokunma performansını optimize eder */
         }
 
         button:hover {
@@ -58,10 +55,10 @@
         /* Dikey mobil kullanımda (600px altı ekranlar) butonları alt alta getir */
         @media (max-width: 600px) {
             .controls {
-                flex-direction: column; /* Butonları dikey yığınla */
+                flex-direction: column; 
             }
             button {
-                width: 95%;     /* Ekranın %95'ini kapla */
+                width: 95%;     
                 margin: 8px auto; 
             }
         }
@@ -76,13 +73,16 @@
         <a-entity light="type: ambient; intensity: 0.8;"></a-entity>
         <a-entity light="type: directional; intensity: 0.6;" position="1 1 1"></a-entity>
 
-        <a-camera></a-camera> 
+        <a-camera user-y-position="0" 
+                  wasd-controls-enabled="false" 
+                  look-controls="enabled: false">
+        </a-camera> 
 
     </a-scene>
 
     <div class="controls">
-        <button onclick="addModel('testglb1.glb', -0.5, 0, -3)">🛋️ Koltuk (Test 1) Ekle</button>
-        <button onclick="addModel('testglb2.glb', 0.5, 0, -3)">🍽️ Masa (Test 2) Ekle</button>
+        <button onclick="addModel('test1.glb', -0.5, 0, -3)">🛋️ Koltuk (Test 1) Ekle</button>
+        <button onclick="addModel('test2.glb', 0.5, 0, -3)">🍽️ Masa (Test 2) Ekle</button>
     </div>
 
     <script>
@@ -98,7 +98,7 @@
             // GLB modelini yükle
             entity.setAttribute('gltf-model', `url(${modelSrc})`);
             
-            // Pozisyonu ayarla 
+            // Pozisyonu ayarla (Kameranın önüne yerleştirir)
             entity.setAttribute('position', `${posX} ${posY} ${posZ}`);
             
             // Boyutu ayarla (Ölçeklendirme)
@@ -107,11 +107,8 @@
             // Modeli direkt sahneye ekle
             scene.appendChild(entity);
             console.log(`${modelSrc} sahneye eklendi.`);
-            
-            // İPUCU: Modelleri hareket ettirmek isterseniz, bu modele bir "draggable" bileşeni ekleyebilirsiniz.
         }
     </script>
 
 </body>
 </html>
-
