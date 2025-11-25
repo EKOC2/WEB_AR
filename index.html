@@ -9,81 +9,61 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
     <style>
-        body {
-            margin: 0px;
-            overflow: hidden;
-        }
+        /* YENİ KÜÇÜLTÜLMÜŞ BUTON CSS'İ */
+        body { margin: 0px; overflow: hidden; }
+        a-scene { pointer-events: none; } 
 
-        /* KRİTİK DÜZELTME: A-Scene'in tıklama olaylarını engelle ki butonlar çalışsın */
-        a-scene {
-            pointer-events: none;
-        }
-
-        /* Butonları sayfanın altında ortalamak ve yönetmek için genel kontrol sınıfı */
         .controls {
-            position: fixed;
-            bottom: 10px; 
-            width: 100%;
-            text-align: center;
-            z-index: 9999; /* Butonların en üstte kalmasını sağlar */
-            
-            /* KRİTİK DÜZELTME: Sadece kontrol kutusunun tıklama olaylarını etkinleştir */
-            pointer-events: auto;
-            
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0 10px; 
+            position: fixed; bottom: 15px; width: 100%; text-align: center; z-index: 9999;
+            pointer-events: auto; display: flex; justify-content: center; align-items: center; padding: 0 10px; 
         }
         
-        /* Buton Stilleri */
         button {
-            padding: 25px 50px; 
-            font-size: 24px;    
-            height: 80px;       
-            width: 48%;         
+            padding: 15px 30px; /* Buton padding'i */
+            font-size: 18px;    /* Yazı boyutu */
+            min-width: 150px;   
+            width: auto;        
+            height: auto;       
             
             margin: 5px; 
             cursor: pointer;
             border: none;
-            border-radius: 15px; 
+            border-radius: 8px; 
             background-color: #dc3545; 
             color: white; 
             font-weight: bold; 
-            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3); 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
             transition: background-color 0.3s ease;
             touch-action: manipulation;
         }
 
-        button:hover {
-            background-color: #bd2130;
-        }
+        button:hover { background-color: #bd2130; }
 
-        /* Dikey mobil kullanımda (600px altı ekranlar) butonları alt alta getir */
         @media (max-width: 600px) {
-            .controls {
-                flex-direction: column; 
-            }
-            button {
-                width: 95%;     
-                margin: 8px auto; 
-            }
+            .controls { flex-direction: column; }
+            button { width: 90%; margin: 8px auto; }
         }
     </style>
 </head>
 <body>
 
     <a-scene embedded 
-             arjs='sourceType: webcam; detectionMode: mono; cameraParametersUrl: camera_para.dat; trackingMethod: best;' 
+             arjs='sourceType: webcam; 
+                   detectionMode: mono; 
+                   cameraParametersUrl: camera_para.dat; 
+                   trackingMethod: best;
+                   device-orientation-ok: false;' 
              vr-mode-ui="enabled: false">
 
         <a-entity light="type: ambient; intensity: 0.8;"></a-entity>
         <a-entity light="type: directional; intensity: 0.6;" position="1 1 1"></a-entity>
 
-        <a-camera position="0 0 0" 
+        <a-camera active="true" 
+                  position="0 0 0" 
                   user-y-position="0" 
                   wasd-controls-enabled="false" 
-                  look-controls="enabled: false">
+                  look-controls="enabled: false"
+                  camera="fov: 90; zoom: 1;">
         </a-camera> 
 
     </a-scene>
@@ -94,22 +74,14 @@
     </div>
 
     <script>
-        /**
-         * Verilen GLB modelini AR sahnesine dinamik olarak ekler.
-         */
         function addModel(modelSrc, posX, posY, posZ) {
             const scene = document.querySelector('a-scene');
             const entity = document.createElement('a-entity');
             
             entity.setAttribute('gltf-model', `url(${modelSrc})`);
-            
-            // Pozisyonu ayarla (Kameranın önüne yerleştirir)
             entity.setAttribute('position', `${posX} ${posY} ${posZ}`);
-            
-            // Boyutu ayarla (Ölçeklendirme)
             entity.setAttribute('scale', '0.5 0.5 0.5'); 
 
-            // Modeli direkt sahneye ekle
             scene.appendChild(entity);
             console.log(`${modelSrc} sahneye eklendi.`);
         }
