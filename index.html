@@ -9,70 +9,102 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
     <style>
-        body { margin: 0px; overflow: hidden; }
-        a-scene { pointer-events: none; } 
-
-        /* KRİTİK DÜZELTME 1: Kamera tuvalini ekran boyutuna zorlar */
-        canvas {
-            width: 100% !important; 
-            height: 100% !important;
+        /* A-Frame sahnesinin tüm ekranı kaplaması için */
+        body {
+            margin: 0px;
+            overflow: hidden;
         }
 
-        /* KRİTİK DÜZELTME 2: Video akışının görüntü oranını zorla korur */
-        video {
-            object-fit: contain; /* Görüntüyü bozmadan sığdır */
-            width: 100% !important;
-            height: 100% !important;
-        }
-
+        /* Butonları sayfanın altında ortalamak ve yönetmek için genel kontrol sınıfı */
         .controls {
-            position: fixed; bottom: 15px; width: 100%; text-align: center; z-index: 9999;
-            pointer-events: auto; display: flex; justify-content: center; align-items: center; padding: 0 10px; 
+            position: fixed;
+            bottom: 10px; 
+            width: 100%;
+            text-align: center;
+            z-index: 999; /* Kamera görüntüsünün üstünde kalmasını sağlar */
+            pointer-events: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 10px; 
         }
         
+        /* Butonların Kendisine Uygulanan Maksimum Boyut Stilleri */
         button {
-            padding: 15px 30px; font-size: 18px; min-width: 150px; width: auto; height: auto;
-            margin: 5px; cursor: pointer; border: none; border-radius: 8px; background-color: #dc3545; 
-            color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
-            transition: background-color 0.3s ease; touch-action: manipulation;
+            padding: 25px 50px; 
+            font-size: 24px;    
+            height: 80px;       
+            width: 48%;         
+            
+            margin: 5px; 
+            cursor: pointer;
+            border: none;
+            border-radius: 15px; 
+            background-color: #dc3545; 
+            color: white; 
+            font-weight: bold; 
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3); 
+            transition: background-color 0.3s ease;
+            touch-action: manipulation; /* Dokunma performansını optimize eder */
         }
 
-        button:hover { background-color: #bd2130; }
+        button:hover {
+            background-color: #bd2130;
+        }
 
+        /* Dikey mobil kullanımda (600px altı ekranlar) butonları alt alta getir */
         @media (max-width: 600px) {
-            .controls { flex-direction: column; }
-            button { width: 90%; margin: 8px auto; }
+            .controls {
+                flex-direction: column; 
+            }
+            button {
+                width: 95%;     
+                margin: 8px auto; 
+            }
         }
     </style>
 </head>
 <body>
 
     <a-scene embedded 
-             arjs='sourceType: webcam; 
-                   detectionMode: mono; 
-                   cameraParametersUrl: camera_para.dat;' 
-             renderer="antialias: true; alpha: true; precision: mediump;"
+             arjs='sourceType: webcam; detectionMode: mono; cameraParametersUrl: camera_para.dat; trackingMethod: best;' 
              vr-mode-ui="enabled: false">
 
         <a-entity light="type: ambient; intensity: 0.8;"></a-entity>
         <a-entity light="type: directional; intensity: 0.6;" position="1 1 1"></a-entity>
 
+        <a-camera user-y-position="0" 
+                  wasd-controls-enabled="false" 
+                  look-controls="enabled: false">
+        </a-camera> 
+
     </a-scene>
 
     <div class="controls">
-        <button onclick="addModel('testglb1.glb', -0.5, 0, -3)">🛋️ Koltuk (Test 1) Ekle</button>
-        <button onclick="addModel('testglb2.glb', 0.5, 0, -3)">🍽️ Masa (Test 2) Ekle</button>
+        <button onclick="addModel('test1.glb', -0.5, 0, -3)">🛋️ Koltuk (Test 1) Ekle</button>
+        <button onclick="addModel('test2.glb', 0.5, 0, -3)">🍽️ Masa (Test 2) Ekle</button>
     </div>
 
     <script>
+        /**
+         * Verilen GLB modelini AR sahnesine dinamik olarak ekler.
+         */
         function addModel(modelSrc, posX, posY, posZ) {
             const scene = document.querySelector('a-scene');
+            
+            // Yeni 3D öğe (entity) oluştur
             const entity = document.createElement('a-entity');
             
+            // GLB modelini yükle
             entity.setAttribute('gltf-model', `url(${modelSrc})`);
+            
+            // Pozisyonu ayarla (Kameranın önüne yerleştirir)
             entity.setAttribute('position', `${posX} ${posY} ${posZ}`);
+            
+            // Boyutu ayarla (Ölçeklendirme)
             entity.setAttribute('scale', '0.5 0.5 0.5'); 
 
+            // Modeli direkt sahneye ekle
             scene.appendChild(entity);
             console.log(`${modelSrc} sahneye eklendi.`);
         }
